@@ -1,0 +1,15 @@
+{
+  "name": "performance-process-pea",
+  "version": "1.0.0",
+  "description": "เว็บพอร์ทัลองค์กรรัฐวิสาหกิจ - จัดการ Process การทำงาน & ผลงานของแผนก",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test",
+    "build": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

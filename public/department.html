@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ข้อมูลแผนก — พอร์ทัลองค์กร</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Sarabun', 'Noto Sans Thai', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; }
+    .topographic-dept {
+      background-color: #3b113c;
+      background-image: radial-gradient(circle at 85% 30%, rgba(229, 169, 60, 0.18) 0%, transparent 55%),
+                        radial-gradient(circle at 15% 75%, rgba(135, 42, 138, 0.35) 0%, transparent 60%);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col text-gray-800">
+
+  <!-- ═══════════════ TOP UTILITY BAR ═══════════════ -->
+  <header class="bg-[#350d36] text-purple-200 text-xs border-b border-purple-900/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-amber-400"></span>
+        <span>เว็บไซต์พอร์ทัลข้อมูลกลางองค์กรรัฐวิสาหกิจ</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="hover:text-amber-400">🏠 หน้าแรก</a>
+        <span>|</span>
+        <a href="admin.html" class="text-amber-300 hover:text-white transition-colors">🔧 ระบบจัดการ</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════ MAIN NAVIGATION ═══════════════ -->
+  <nav class="bg-[#4A154B] text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-400 text-[#4A154B] flex items-center justify-center font-bold text-xl shadow-md">
+            ⚡
+          </div>
+          <div>
+            <div class="font-bold text-lg leading-tight">การไฟฟ้าส่วนภูมิภาค</div>
+            <div class="text-[11px] text-purple-200 uppercase tracking-wider">Provincial Electricity Authority</div>
+          </div>
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center gap-1">
+          <a href="index.html" class="px-3.5 py-2 rounded-lg text-sm font-medium text-purple-100 hover:text-white hover:bg-purple-900/40">หน้าแรก</a>
+          <a href="index.html#departmentsSection" class="px-3.5 py-2 rounded-lg text-sm font-medium bg-purple-900/60 text-amber-300">หน่วยงานภายใน</a>
+          <a href="documents.html" class="px-3.5 py-2 rounded-lg text-sm font-medium text-purple-100 hover:text-white hover:bg-purple-900/40">เอกสารเผยแพร่</a>
+        </div>
+
+        <!-- Department Switcher Dropdown -->
+        <div class="flex items-center gap-2">
+          <select id="headerDeptSwitcher"
+                  class="bg-purple-950/80 text-white text-xs rounded-lg px-3 py-1.5 border border-purple-500/40 focus:ring-2 focus:ring-amber-400 focus:outline-none">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════ BREADCRUMB ═══════════════ -->
+  <div class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 text-xs text-gray-500 flex items-center gap-2">
+      <a href="index.html" class="hover:text-purple-700">หน้าแรก</a>
+      <span>/</span>
+      <a href="index.html#departmentsSection" class="hover:text-purple-700">หน่วยงานภายใน</a>
+      <span>/</span>
+      <span class="text-purple-900 font-semibold" id="breadcrumbDeptName">กำลังโหลด...</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MAIN CONTENT CONTAINER ═══════════════ -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-8">
+
+    <!-- ── 1. DEPARTMENT HERO BANNER ── -->
+    <div class="topographic-dept rounded-2xl text-white p-6 sm:p-8 md:p-10 shadow-lg relative overflow-hidden border-2 border-amber-400/40">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
+        <div class="lg:col-span-8 space-y-3">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-900/80 border border-purple-400/30 text-amber-300 text-xs font-semibold">
+            <span>🏢</span> หน่วยงานภายใน
+          </div>
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight" id="deptTitle">
+            แผนกระบบสารสนเทศภูมิศาสตร์
+          </h1>
+          <p class="text-sm text-purple-200 font-medium" id="deptTitleEn">
+            Geographic Information System (GIS)
+          </p>
+          <p class="text-sm sm:text-base text-purple-100/90 leading-relaxed max-w-2xl pt-1" id="deptHeroDesc">
+            จัดทำ ดูแล และให้บริการข้อมูลแผนที่และข้อมูลเชิงพื้นที่ เพื่อสนับสนุนการวางแผนและการปฏิบัติงานของหน่วยงาน
+          </p>
+        </div>
+
+        <!-- 3D Graphic Placeholder -->
+        <div class="lg:col-span-4 flex justify-center">
+          <div class="w-40 h-40 sm:w-48 sm:h-48 rounded-2xl bg-purple-900/50 border border-purple-400/30 backdrop-blur-md flex flex-col items-center justify-center p-4 text-center shadow-inner">
+            <span class="text-5xl mb-2">🗺️</span>
+            <span class="text-xs text-amber-300 font-bold" id="deptBadgeCode">PEA - GIS</span>
+            <span class="text-[11px] text-purple-300">Spatial Data Center</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 2. SUB-NAVIGATION TABS (STICKY) ── -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-2 sticky top-16 z-30 overflow-x-auto">
+      <div class="flex items-center gap-2 min-w-max">
+        <a href="#overviewSection" class="px-4 py-2 rounded-lg text-xs font-semibold bg-purple-100 text-purple-900 hover:bg-purple-200 transition-colors">
+          ℹ️ ภาพรวมแผนก
+        </a>
+        <a href="#missionsSection" class="px-4 py-2 rounded-lg text-xs font-semibold text-gray-600 hover:text-purple-900 hover:bg-purple-50 transition-colors">
+          🎯 หน้าที่และภารกิจ
+        </a>
+        <a href="#achievementsSection" class="px-4 py-2 rounded-lg text-xs font-semibold text-gray-600 hover:text-purple-900 hover:bg-purple-50 transition-colors">
+          🏆 ผลงานของแผนก
+        </a>
+        <a href="#announcementsSection" class="px-4 py-2 rounded-lg text-xs font-semibold text-gray-600 hover:text-purple-900 hover:bg-purple-50 transition-colors">
+          📢 ประกาศ & เอกสาร
+        </a>
+        <a href="#personnelSection" class="px-4 py-2 rounded-lg text-xs font-semibold text-gray-600 hover:text-purple-900 hover:bg-purple-50 transition-colors">
+          👥 บุคลากรและติดต่อ
+        </a>
+      </div>
+    </div>
+
+    <!-- ── 3. OVERVIEW & STATS SECTION ── -->
+    <section id="overviewSection" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Overview Text (7 cols) -->
+        <div class="lg:col-span-7 space-y-3">
+          <div class="text-xs font-bold text-purple-700 uppercase tracking-wider">OVERVIEW</div>
+          <h2 class="text-xl sm:text-2xl font-bold text-gray-900" id="overviewHeading">
+            GIS คืออะไร
+          </h2>
+          <p class="text-sm sm:text-base text-gray-600 leading-relaxed" id="overviewParagraph">
+            ระบบสารสนเทศภูมิศาสตร์ (Geographic Information System: GIS) คือกระบวนการทำงานที่เกี่ยวกับการจัดการข้อมูลเชิงพื้นที่ โดยใช้คอมพิวเตอร์ในการจัดเก็บ บันทึก วิเคราะห์ แสดงผล และเผยแพร่ข้อมูล เพื่อสนับสนุนการวางแผนและการตัดสินใจ
+          </p>
+        </div>
+
+        <!-- 3 Stats Cards (5 cols) -->
+        <div class="lg:col-span-5 grid grid-cols-3 gap-3" id="statsContainer">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 4. MISSIONS & DUTIES SECTION ── -->
+    <section id="missionsSection" class="space-y-4">
+      <div>
+        <div class="text-xs font-bold text-purple-700 uppercase tracking-wider">RESPONSIBILITIES</div>
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">หน้าที่และภารกิจ</h2>
+        <p class="text-xs sm:text-sm text-gray-500">ภารกิจหลักในการให้บริการและสนับสนุนการดำเนินงานขององค์กร</p>
+      </div>
+
+      <!-- 6 Mission Cards Grid (3x2 Desktop, 1x6 Mobile) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="missionsGrid">
+        <!-- Populated via JS -->
+      </div>
+    </section>
+
+    <!-- ── 5. DEPARTMENT ACHIEVEMENTS (เชื่อมโยง Block-based เดิม) ── -->
+    <section id="achievementsSection" class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-xs font-bold text-purple-700 uppercase tracking-wider">WORKS & PROCESSES</div>
+          <h2 class="text-xl sm:text-2xl font-bold text-gray-900">ผลงานและ Process ของแผนก</h2>
+          <p class="text-xs sm:text-sm text-gray-500">รวบรวมผลงานสำคัญและกระบวนการทำงานที่บันทึกไว้ในระบบ</p>
+        </div>
+      </div>
+
+      <!-- Articles Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="deptArticlesGrid">
+        <!-- Populated via JS -->
+      </div>
+    </section>
+
+    <!-- ── 6. NOTICES & DOCUMENTS (TWO COLUMNS) ── -->
+    <section id="announcementsSection" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Notices of this department -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
+        <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+          <span>📢</span> ประกาศของแผนก
+        </h3>
+        <div class="space-y-2 divide-y divide-gray-100" id="deptAnnouncementsList">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+
+      <!-- Documents of this department -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <span>📁</span> เอกสารของแผนก
+          </h3>
+          <a href="documents.html" class="text-xs text-purple-700 hover:text-purple-900 font-medium">คลังเอกสารทั้งหมด →</a>
+        </div>
+        <div class="space-y-2.5" id="deptDocumentsList">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 7. PERSONNEL & CONTACT SECTION ── -->
+    <section id="personnelSection" class="space-y-4">
+      <div>
+        <div class="text-xs font-bold text-purple-700 uppercase tracking-wider">TEAM & CONTACT</div>
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900">บุคลากรและติดต่อแผนก</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Personnel Cards (8 cols) -->
+        <div class="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-4" id="personnelGrid">
+          <!-- Populated via JS -->
+        </div>
+
+        <!-- Contact Info Card (4 cols) -->
+        <div class="lg:col-span-4 bg-gradient-to-br from-purple-900 to-purple-950 text-white rounded-2xl p-6 shadow-md border border-purple-800 flex flex-col justify-between" id="contactCard">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════ ARTICLE DETAIL MODAL ═══════════════ -->
+  <div id="articleModal"
+       class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-amber-50">
+        <span class="text-sm font-medium text-purple-800">📄 รายละเอียดบทความ</span>
+        <button id="closeModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+      </div>
+      <div id="modalBody" class="p-6 md:p-8 overflow-y-auto flex-1"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="bg-[#350d36] text-purple-200 mt-auto border-t-2 border-amber-400/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-xs space-y-2">
+      <p class="text-white font-semibold">การไฟฟ้าส่วนภูมิภาค (Provincial Electricity Authority)</p>
+      <p class="text-purple-300">© 2569 — ระบบพอร์ทัลข้อมูลกลางและกระบวนการทำงาน</p>
+    </div>
+  </footer>
+
+  <script type="module" src="./js/department.js"></script>
+</body>
+</html>

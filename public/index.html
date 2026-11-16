@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>พอร์ทัลองค์กร — ศูนย์รวมข่าวสาร ประกาศ และเอกสารของทุกแผนก</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Sarabun', 'Noto Sans Thai', 'sans-serif']
+          },
+          colors: {
+            brand: {
+              purple: '#4A154B',
+              purpleDark: '#350d36',
+              purpleLight: '#611f69',
+              gold: '#E5A93C',
+              goldHover: '#d4982a',
+              goldLight: '#FFF8EB'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; }
+    .topographic-bg {
+      background-color: #3b113c;
+      background-image: radial-gradient(circle at 80% 40%, rgba(229, 169, 60, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 20% 80%, rgba(135, 42, 138, 0.3) 0%, transparent 60%);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col text-gray-800">
+
+  <!-- ═══════════════ TOP UTILITY BAR ═══════════════ -->
+  <header class="bg-[#350d36] text-purple-200 text-xs border-b border-purple-900/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-amber-400"></span>
+        <span>เว็บไซต์พอร์ทัลข้อมูลกลางองค์กรรัฐวิสาหกิจ</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="hidden sm:inline">ขนาดตัวอักษร: <button id="btnTextSmall" class="hover:text-amber-400">ก-</button> <button id="btnTextNormal" class="hover:text-amber-400 font-bold">ก</button> <button id="btnTextLarge" class="hover:text-amber-400">ก+</button></span>
+        <span>|</span>
+        <span class="font-semibold text-white">TH</span>
+        <span class="text-purple-400">| EN</span>
+        <a href="admin.html" class="ml-2 text-amber-300 hover:text-white transition-colors">🔧 ระบบจัดการ</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════ MAIN NAVIGATION ═══════════════ -->
+  <nav class="bg-[#4A154B] text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo & Organization Name -->
+        <a href="index.html" class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-400 text-[#4A154B] flex items-center justify-center font-bold text-xl shadow-md">
+            ⚡
+          </div>
+          <div>
+            <div class="font-bold text-lg leading-tight tracking-wide">การไฟฟ้าส่วนภูมิภาค</div>
+            <div class="text-[11px] text-purple-200 uppercase tracking-wider">Provincial Electricity Authority</div>
+          </div>
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center gap-1">
+          <a href="index.html" class="px-3.5 py-2 rounded-lg text-sm font-medium bg-purple-900/60 text-amber-300">หน้าแรก</a>
+          <a href="#departmentsSection" class="px-3.5 py-2 rounded-lg text-sm font-medium text-purple-100 hover:text-white hover:bg-purple-900/40 transition-colors">หน่วยงานภายใน</a>
+          <a href="#announcementsSection" class="px-3.5 py-2 rounded-lg text-sm font-medium text-purple-100 hover:text-white hover:bg-purple-900/40 transition-colors">ข่าวและประกาศ</a>
+          <a href="documents.html" class="px-3.5 py-2 rounded-lg text-sm font-medium text-purple-100 hover:text-white hover:bg-purple-900/40 transition-colors">เอกสารเผยแพร่</a>
+          <a href="#footerSection" class="px-3.5 py-2 rounded-lg text-sm font-medium text-purple-100 hover:text-white hover:bg-purple-900/40 transition-colors">ติดต่อเรา</a>
+        </div>
+
+        <!-- Search / Mobile Menu Button -->
+        <div class="flex items-center gap-2">
+          <a href="documents.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-900/60 text-purple-200 text-xs hover:text-white transition-colors border border-purple-800">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            ค้นหาเอกสาร
+          </a>
+          <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg text-purple-200 hover:text-white hover:bg-purple-900/60 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Dropdown -->
+    <div id="mobileMenu" class="hidden md:hidden bg-[#350d36] border-t border-purple-900 px-4 pt-2 pb-4 space-y-1">
+      <a href="index.html" class="block px-3 py-2 rounded-lg text-base font-medium text-amber-300 bg-purple-900/60">หน้าแรก</a>
+      <a href="#departmentsSection" class="block px-3 py-2 rounded-lg text-base font-medium text-purple-100 hover:text-white hover:bg-purple-900/40">หน่วยงานภายใน</a>
+      <a href="#announcementsSection" class="block px-3 py-2 rounded-lg text-base font-medium text-purple-100 hover:text-white hover:bg-purple-900/40">ข่าวและประกาศ</a>
+      <a href="documents.html" class="block px-3 py-2 rounded-lg text-base font-medium text-purple-100 hover:text-white hover:bg-purple-900/40">เอกสารเผยแพร่</a>
+      <a href="admin.html" class="block px-3 py-2 rounded-lg text-base font-medium text-amber-300 hover:bg-purple-900/40">🔧 ระบบจัดการหลังบ้าน</a>
+    </div>
+  </nav>
+
+  <!-- ═══════════════ HERO BANNER (แบบ A ม่วง-ทอง) ═══════════════ -->
+  <section class="topographic-bg text-white py-12 md:py-16 relative overflow-hidden border-b-4 border-amber-400">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Text Content -->
+        <div class="lg:col-span-7 space-y-4 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-900/80 border border-purple-400/30 text-amber-300 text-xs font-medium">
+            <span>🏛️</span> เว็บไซต์หน่วยงานภายในองค์กร
+          </div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
+            ศูนย์รวมข่าวสาร ประกาศ <br class="hidden sm:inline">
+            และ<span class="text-amber-400">เอกสารของทุกแผนก</span>
+          </h1>
+          <p class="text-purple-200 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            ติดตามข่าวสารประชาสัมพันธ์ ประกาศจัดซื้อจัดจ้าง ผลงานความก้าวหน้า และเอกสารเผยแพร่ของทุกหน่วยงานในที่เดียว
+          </p>
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+            <a href="#announcementsSection" class="px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-purple-950 font-bold text-sm shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
+              📢 ดูประกาศล่าสุด
+            </a>
+            <a href="documents.html" class="px-6 py-3 rounded-xl bg-purple-900/80 hover:bg-purple-800 text-white font-medium text-sm border border-purple-400/40 shadow-sm transition-all">
+              📁 ค้นหาเอกสาร
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero Graphic Illustration (Map with Pin) -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="relative w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center">
+            <!-- Contour circles -->
+            <div class="absolute inset-0 rounded-full border border-purple-500/20 animate-pulse"></div>
+            <div class="absolute inset-6 rounded-full border border-purple-400/30"></div>
+            <div class="absolute inset-12 rounded-full border border-dashed border-amber-400/30"></div>
+            <!-- Pin Card -->
+            <div class="bg-[#4A154B]/90 backdrop-blur-md border border-purple-400/40 rounded-2xl p-6 shadow-2xl text-center transform hover:scale-105 transition-transform duration-300">
+              <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-3xl shadow-lg">
+                📍
+              </div>
+              <h3 class="text-amber-300 font-bold text-base">ระบบสารสนเทศภูมิศาสตร์ (GIS)</h3>
+              <p class="text-xs text-purple-200 mt-1">และศูนย์บริการข้อมูลทุกหน่วยงาน</p>
+              <div class="mt-4 pt-3 border-t border-purple-700/50 flex items-center justify-center gap-4 text-xs text-purple-300">
+                <span>📍 12 เขตพื้นที่</span>
+                <span>•</span>
+                <span>📊 30+ ชุดข้อมูล</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SECTION: ข่าว & ประกาศ + เอกสารล่าสุด (2 คอลัมน์) ═══════════════ -->
+  <section id="announcementsSection" class="py-10 md:py-14 flex-1">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <!-- ── LEFT COLUMN (65%): ข่าวและประกาศล่าสุด ── -->
+        <div class="lg:col-span-8 space-y-6">
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <!-- Header & Tabs -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-gray-100">
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <span>📢</span> ข่าวและประกาศล่าสุด
+                </h3>
+              </div>
+              <!-- Filter Tabs -->
+              <div class="flex flex-wrap gap-1 bg-gray-100 p-1 rounded-xl" id="annFilterTabs">
+                <button data-type="all" class="ann-tab px-3 py-1.5 rounded-lg text-xs font-medium active bg-purple-700 text-white">ทั้งหมด</button>
+                <button data-type="notice" class="ann-tab px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:text-gray-900">ประกาศ</button>
+                <button data-type="job" class="ann-tab px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:text-gray-900">รับสมัครงาน</button>
+                <button data-type="achievement" class="ann-tab px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:text-gray-900">ผลงาน</button>
+              </div>
+            </div>
+
+            <!-- Announcements List -->
+            <div class="divide-y divide-gray-100 mt-4 space-y-2" id="announcementsList">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ── RIGHT COLUMN (35%): เอกสารเผยแพร่ล่าสุด & ลิงก์ ── -->
+        <div class="lg:col-span-4 space-y-6">
+          <!-- Documents Card -->
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-100 mb-4">
+              <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <span>📁</span> เอกสารเผยแพร่ล่าสุด
+              </h3>
+              <a href="documents.html" class="text-xs font-medium text-purple-700 hover:text-purple-900">ดูทั้งหมด →</a>
+            </div>
+
+            <!-- Documents List -->
+            <div class="space-y-3" id="homeDocumentsList">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div class="mt-5 pt-4 border-t border-gray-100 text-center">
+              <a href="documents.html" class="inline-flex items-center justify-center w-full px-4 py-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-800 text-xs font-semibold transition-colors border border-purple-200">
+                เข้าสู่คลังเอกสารทั้งหมด ➔
+              </a>
+            </div>
+          </div>
+
+          <!-- Related Links Card -->
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <h4 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+              <span>🔗</span> ลิงก์ระบบที่เกี่ยวข้อง
+            </h4>
+            <div class="space-y-2">
+              <a href="department.html?dept=gis" class="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 hover:bg-purple-50 text-xs font-medium text-gray-700 hover:text-purple-900 transition-colors border border-gray-100">
+                <span>ระบบแผนที่และสารสนเทศภูมิศาสตร์ (GIS)</span>
+                <span>➔</span>
+              </a>
+              <a href="department.html?dept=it" class="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 hover:bg-purple-50 text-xs font-medium text-gray-700 hover:text-purple-900 transition-colors border border-gray-100">
+                <span>ระบบ IT Service Desk และบริการไอที</span>
+                <span>➔</span>
+              </a>
+              <a href="department.html?dept=hr" class="flex items-center justify-between p-2.5 rounded-xl bg-gray-50 hover:bg-purple-50 text-xs font-medium text-gray-700 hover:text-purple-900 transition-colors border border-gray-100">
+                <span>ระบบบริการตนเองพนักงาน (HR Self-Service)</span>
+                <span>➔</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SECTION: หน่วยงานภายใน ═══════════════ -->
+  <section id="departmentsSection" class="py-10 md:py-14 bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <div>
+          <div class="text-xs font-bold text-purple-700 uppercase tracking-wider mb-1">DEPARTMENTS</div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">หน่วยงานภายใน</h2>
+          <p class="text-sm text-gray-500 mt-1">เลือกแผนกเพื่อดูข้อมูล ภาพรวม หน้าที่ภารกิจ และผลงานของแผนก</p>
+        </div>
+      </div>
+
+      <!-- Department Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="departmentCardsContainer">
+        <!-- Loading Placeholder -->
+        <div class="col-span-full text-center py-10 text-gray-400 text-sm">
+          ⏳ กำลังโหลดข้อมูลแผนกจาก Firestore...
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FOOTER (แบบ A ม่วง-ทอง) ═══════════════ -->
+  <footer id="footerSection" class="bg-[#350d36] text-purple-200 mt-auto border-t-2 border-amber-400/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <!-- Col 1: About -->
+        <div class="md:col-span-2 space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-amber-400 text-[#4A154B] flex items-center justify-center font-bold text-lg">
+              ⚡
+            </div>
+            <div>
+              <div class="font-bold text-white text-base">การไฟฟ้าส่วนภูมิภาค</div>
+              <div class="text-[11px] text-purple-300">Provincial Electricity Authority</div>
+            </div>
+          </div>
+          <p class="text-xs text-purple-300 leading-relaxed max-w-sm">
+            ระบบศูนย์รวมข้อมูลกระบวนการทำงาน ข่าวสาร และเอกสารเผยแพร่ เพื่อการบูรณาการข้อมูลและการปฏิบัติงานอย่างมีประสิทธิภาพ
+          </p>
+        </div>
+
+        <!-- Col 2: Navigation -->
+        <div>
+          <h4 class="text-white text-sm font-semibold mb-3">เมนูหลัก</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="index.html" class="hover:text-amber-400 transition-colors">หน้าแรก</a></li>
+            <li><a href="#departmentsSection" class="hover:text-amber-400 transition-colors">หน่วยงานภายใน</a></li>
+            <li><a href="#announcementsSection" class="hover:text-amber-400 transition-colors">ข่าวและประกาศ</a></li>
+            <li><a href="documents.html" class="hover:text-amber-400 transition-colors">เอกสารเผยแพร่</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Contact -->
+        <div>
+          <h4 class="text-white text-sm font-semibold mb-3">ติดต่อสอบถาม</h4>
+          <p class="text-xs text-purple-300 leading-relaxed">
+            สำนักงานใหญ่ การไฟฟ้าส่วนภูมิภาค<br>
+            200 ถนนงามวงศ์วาน ลาดยาว จตุจักร กทม. 10900<br>
+            โทรศัพท์: 1129 PEA Contact Center
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-purple-900/60 flex flex-col sm:flex-row items-center justify-between text-xs text-purple-400 gap-3">
+        <p>© 2569 การไฟฟ้าส่วนภูมิภาค — สงวนลิขสิทธิ์ทุกประการ</p>
+        <p>พัฒนาโดยแผนกระบบสารสนเทศภูมิศาสตร์และฝ่ายเทคโนโลยีสารสนเทศ</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════ SCRIPT ═══════════════ -->
+  <script type="module">
+    import { fetchDepartments, fetchAnnouncements, fetchDocuments } from './js/firestore-service.js';
+    import { renderAnnouncementItem, renderDocumentCompact, escapeHtml } from './js/renderer.js';
+
+    // ── State ──
+    let departments = [];
+    let announcements = [];
+    let documents = [];
+    let currentAnnFilter = 'all';
+
+    async function init() {
+      setupEventListeners();
+      await loadData();
+    }
+
+    async function loadData() {
+      try {
+        const [loadedDepts, loadedAnns, loadedDocs] = await Promise.all([
+          fetchDepartments(),
+          fetchAnnouncements(),
+          fetchDocuments()
+        ]);
+        departments = loadedDepts;
+        announcements = loadedAnns;
+        documents = loadedDocs;
+      } catch (err) {
+        console.error('Error loading data from Firestore:', err);
+      }
+      renderDepartmentCards();
+      renderAnnouncements();
+      renderRecentDocuments();
+    }
+
+    // Render Department Cards
+    function renderDepartmentCards() {
+      const container = document.getElementById('departmentCardsContainer');
+      if (!departments || departments.length === 0) {
+        container.innerHTML = '<p class="col-span-full text-center text-sm text-gray-400 py-6">ไม่พบข้อมูลแผนก</p>';
+        return;
+      }
+
+      container.innerHTML = departments.map((dept, index) => {
+        const isGis = dept.id === 'gis';
+        const cardBg = isGis
+          ? 'bg-gradient-to-br from-purple-50 via-white to-amber-50/40 border-purple-300 ring-2 ring-purple-600/20'
+          : 'bg-white border-gray-200';
+        const badgeBg = isGis
+          ? 'bg-purple-700 text-white'
+          : 'bg-gray-100 text-gray-700';
+
+        return `
+          <div class="${cardBg} rounded-2xl p-5 border shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold ${badgeBg}">
+                  ${escapeHtml(dept.shortName || dept.name)}
+                </span>
+                ${isGis ? '<span class="text-xs text-amber-500 font-bold">⭐ แนะนำ</span>' : ''}
+              </div>
+              <h3 class="text-base font-bold text-gray-900 group-hover:text-purple-800 transition-colors mb-1.5">
+                ${escapeHtml(dept.name)}
+              </h3>
+              <p class="text-xs text-gray-500 line-clamp-3 leading-relaxed mb-4">
+                ${escapeHtml(dept.heroDescription || dept.overviewText || 'ข้อมูลกระบวนการทำงานและผลงานของแผนก')}
+              </p>
+            </div>
+            <a href="department.html?dept=${encodeURIComponent(dept.id)}"
+               class="inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-xl ${isGis ? 'bg-purple-800 hover:bg-purple-900 text-white' : 'bg-gray-100 hover:bg-purple-100 text-gray-700 hover:text-purple-800'} text-xs font-semibold transition-colors mt-auto">
+              เข้าสู่หน้าแผนก ➔
+            </a>
+          </div>`;
+      }).join('');
+    }
+
+    // Render Announcements List
+    function renderAnnouncements() {
+      const listEl = document.getElementById('announcementsList');
+      let filtered = announcements;
+      if (currentAnnFilter !== 'all') {
+        filtered = announcements.filter(a => a.type === currentAnnFilter);
+      }
+
+      if (!filtered || filtered.length === 0) {
+        listEl.innerHTML = '<p class="text-gray-400 text-sm text-center py-6">ไม่พบข่าวสารในหมวดนี้</p>';
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(ann => renderAnnouncementItem(ann)).join('');
+    }
+
+    // Render Recent Documents (5 items)
+    function renderRecentDocuments() {
+      const container = document.getElementById('homeDocumentsList');
+      if (!documents || documents.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-xs text-center py-4">ยังไม่มีเอกสาร</p>';
+        return;
+      }
+      const recent = documents.slice(0, 5);
+      container.innerHTML = recent.map(doc => renderDocumentCompact(doc)).join('');
+    }
+
+    // Event Listeners
+    function setupEventListeners() {
+      // Mobile menu
+      const mobileBtn = document.getElementById('mobileMenuBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileBtn?.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+
+      // Announcement Tabs
+      document.querySelectorAll('.ann-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.ann-tab').forEach(t => {
+            t.classList.remove('active', 'bg-purple-700', 'text-white');
+            t.classList.add('text-gray-600');
+          });
+          tab.classList.add('active', 'bg-purple-700', 'text-white');
+          tab.classList.remove('text-gray-600');
+          currentAnnFilter = tab.dataset.type;
+          renderAnnouncements();
+        });
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>

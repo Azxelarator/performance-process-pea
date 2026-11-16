@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>คลังเอกสารเผยแพร่ — พอร์ทัลองค์กร</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Sarabun', 'Noto Sans Thai', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col text-gray-800">
+
+  <!-- ═══════════════ TOP UTILITY BAR ═══════════════ -->
+  <header class="bg-[#350d36] text-purple-200 text-xs border-b border-purple-900/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-amber-400"></span>
+        <span>เว็บไซต์พอร์ทัลข้อมูลกลางองค์กรรัฐวิสาหกิจ</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="hover:text-amber-400">🏠 หน้าแรก</a>
+        <span>|</span>
+        <a href="admin.html" class="text-amber-300 hover:text-white transition-colors">🔧 ระบบจัดการ</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════ MAIN NAVIGATION ═══════════════ -->
+  <nav class="bg-[#4A154B] text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-400 text-[#4A154B] flex items-center justify-center font-bold text-xl shadow-md">
+            ⚡
+          </div>
+          <div>
+            <div class="font-bold text-lg leading-tight">การไฟฟ้าส่วนภูมิภาค</div>
+            <div class="text-[11px] text-purple-200 uppercase tracking-wider">Provincial Electricity Authority</div>
+          </div>
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center gap-1">
+          <a href="index.html" class="px-3.5 py-2 rounded-lg text-sm font-medium text-purple-100 hover:text-white hover:bg-purple-900/40">หน้าแรก</a>
+          <a href="index.html#departmentsSection" class="px-3.5 py-2 rounded-lg text-sm font-medium text-purple-100 hover:text-white hover:bg-purple-900/40">หน่วยงานภายใน</a>
+          <a href="documents.html" class="px-3.5 py-2 rounded-lg text-sm font-medium bg-purple-900/60 text-amber-300">เอกสารเผยแพร่</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════ BREADCRUMB ═══════════════ -->
+  <div class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 text-xs text-gray-500 flex items-center gap-2">
+      <a href="index.html" class="hover:text-purple-700">หน้าแรก</a>
+      <span>/</span>
+      <span class="text-purple-900 font-semibold">เอกสารเผยแพร่</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-6">
+
+    <!-- Header Section -->
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">เอกสารเผยแพร่</h1>
+      <p class="text-sm text-gray-500 mt-1">
+        ค้นหาและดาวน์โหลดคู่มือ แบบฟอร์ม รายงาน และประกาศของทุกแผนก
+      </p>
+    </div>
+
+    <!-- ── SEARCH & FILTERS CARD ── -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+        <!-- Search Input (6 cols) -->
+        <div class="sm:col-span-6">
+          <div class="relative">
+            <span class="absolute inset-y-0 left-3.5 flex items-center text-gray-400">🔍</span>
+            <input id="docSearchInput" type="text"
+                   placeholder="ค้นหาชื่อเอกสาร, คำค้น, หรือเลขที่..."
+                   class="w-full border border-gray-300 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600">
+          </div>
+        </div>
+
+        <!-- Department Filter (3 cols) -->
+        <div class="sm:col-span-3">
+          <select id="docDeptFilter"
+                  class="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 bg-white">
+            <option value="all">🏢 ทุกหน่วยงาน</option>
+          </select>
+        </div>
+
+        <!-- Year Filter (3 cols) -->
+        <div class="sm:col-span-3">
+          <select id="docYearFilter"
+                  class="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 bg-white">
+            <option value="all">📅 ปี พ.ศ. ทั้งหมด</option>
+            <option value="2569">ปี 2569</option>
+            <option value="2568">ปี 2568</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills (Scrollable on mobile) -->
+      <div class="flex items-center gap-2 overflow-x-auto pt-2 border-t border-gray-100 pb-1" id="docCategoryPills">
+        <button data-category="all" class="doc-cat-pill px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap active bg-purple-700 text-white">
+          ทั้งหมด
+        </button>
+        <button data-category="manual" class="doc-cat-pill px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-gray-100 text-gray-700 hover:bg-gray-200">
+          📖 คู่มือ
+        </button>
+        <button data-category="form" class="doc-cat-pill px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-gray-100 text-gray-700 hover:bg-gray-200">
+          📋 แบบฟอร์ม
+        </button>
+        <button data-category="report" class="doc-cat-pill px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-gray-100 text-gray-700 hover:bg-gray-200">
+          📊 รายงาน
+        </button>
+        <button data-category="order" class="doc-cat-pill px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-gray-100 text-gray-700 hover:bg-gray-200">
+          📜 ประกาศ/คำสั่ง
+        </button>
+      </div>
+    </div>
+
+    <!-- Results Counter -->
+    <div class="flex items-center justify-between text-xs text-gray-500">
+      <span id="docResultsCount">กำลังค้นหา...</span>
+      <span class="hidden sm:inline">คลิกที่ปุ่ม "ดาวน์โหลด" เพื่อบันทึกไฟล์</span>
+    </div>
+
+    <!-- ── DESKTOP DOCUMENTS TABLE (Visible md+) ── -->
+    <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="bg-gradient-to-r from-purple-50 to-amber-50/50 border-b border-gray-200 text-xs font-bold text-purple-900 uppercase">
+              <th class="px-5 py-3.5">ชื่อเอกสาร</th>
+              <th class="px-5 py-3.5">หมวดหมู่</th>
+              <th class="px-5 py-3.5">หน่วยงาน</th>
+              <th class="px-5 py-3.5">วันที่เผยแพร่</th>
+              <th class="px-5 py-3.5 text-center">ดาวน์โหลด</th>
+            </tr>
+          </thead>
+          <tbody id="desktopDocsTableBody" class="divide-y divide-gray-100">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── MOBILE DOCUMENTS CARDS (Visible < md) ── -->
+    <div class="md:hidden space-y-3" id="mobileDocsCards">
+      <!-- Populated via JS -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="docsEmptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-gray-200">
+      <p class="text-5xl mb-3">📁</p>
+      <p class="text-base font-bold text-gray-800">ไม่พบเอกสารที่ค้นหา</p>
+      <p class="text-xs text-gray-500 mt-1">ลองเปลี่ยนคำค้นหาหรือตัวกรองหมวดหมู่</p>
+    </div>
+
+    <!-- Pagination / Load More -->
+    <div class="flex items-center justify-center pt-4" id="paginationContainer">
+      <div class="flex items-center gap-1.5 text-xs">
+        <button class="px-3 py-1.5 rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-100">◀ ก่อนหน้า</button>
+        <button class="px-3.5 py-1.5 rounded-lg bg-purple-700 text-white font-bold">1</button>
+        <button class="px-3.5 py-1.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100">2</button>
+        <button class="px-3 py-1.5 rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-100">ถัดไป ▶</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="bg-[#350d36] text-purple-200 mt-auto border-t-2 border-amber-400/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-xs space-y-2">
+      <p class="text-white font-semibold">การไฟฟ้าส่วนภูมิภาค (Provincial Electricity Authority)</p>
+      <p class="text-purple-300">© 2569 — คลังเอกสารเผยแพร่ส่วนกลาง</p>
+    </div>
+  </footer>
+
+  <script type="module" src="./js/documents.js"></script>
+</body>
+</html>

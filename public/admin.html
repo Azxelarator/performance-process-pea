@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบจัดการ — พอร์ทัลองค์กร</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Sarabun', 'Noto Sans Thai', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; }
+    .nav-tab-active {
+      border-bottom: 3px solid #E5A93C;
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col text-gray-800">
+
+  <!-- ═══════════════ NAVBAR ═══════════════ -->
+  <nav class="bg-[#4A154B] shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-amber-400 text-purple-950 rounded-xl flex items-center justify-center font-bold text-lg shadow">
+            ⚡
+          </div>
+          <div>
+            <h1 class="text-white font-bold text-lg leading-tight">ระบบจัดการข้อมูลพอร์ทัล</h1>
+            <p class="text-purple-300 text-xs">Admin Management Panel (Firebase)</p>
+          </div>
+        </div>
+
+        <!-- Right Side: User Profile & Nav Links -->
+        <div class="flex items-center gap-3">
+          <!-- User Profile Widget (Shown when logged in) -->
+          <div id="userProfileWidget" class="hidden items-center gap-2.5 bg-purple-900/80 border border-purple-700/60 rounded-xl px-3 py-1.5 text-xs text-white">
+            <img id="userAvatarImg" src="" alt="Avatar" class="w-7 h-7 rounded-full border border-amber-400">
+            <div class="hidden sm:block text-left">
+              <div id="userNameTxt" class="font-bold leading-tight truncate max-w-[130px]">กำลังโหลด...</div>
+              <div id="userRoleBadge" class="text-[10px] text-amber-300 font-medium">สิทธิ์การใช้งาน</div>
+            </div>
+            <button id="btnSignOut" class="ml-1 text-purple-200 hover:text-amber-300 transition-colors p-1" title="ออกจากระบบ">
+              🚪
+            </button>
+          </div>
+
+          <a href="index.html"
+             class="text-purple-200 hover:text-amber-300 text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-purple-900/60">
+            <span>🏠</span> กลับหน้าบ้าน
+          </a>
+        </div>
+      </div>
+
+      <!-- Top Section Tabs -->
+      <div class="flex gap-4 sm:gap-6 border-t border-purple-800/80 pt-1 text-sm overflow-x-auto" id="adminMainTabs">
+        <button id="tabArticlesBtn" class="py-2.5 px-2 text-purple-200 hover:text-white transition-colors nav-tab-active whitespace-nowrap">
+          📝 บทความ & ผลงาน (Block Editor)
+        </button>
+        <button id="tabDeptBtn" class="py-2.5 px-2 text-purple-200 hover:text-white transition-colors whitespace-nowrap">
+          🏢 ข้อมูลและภารกิจแผนก
+        </button>
+        <button id="tabDocsBtn" class="py-2.5 px-2 text-purple-200 hover:text-white transition-colors whitespace-nowrap">
+          📁 คลังเอกสารเผยแพร่
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+  <main id="adminMainContent" class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+    <!-- ═════════════════════════════════════════════════════════════ -->
+    <!--  SECTION 1: ARTICLES & WORKS (BLOCK EDITOR - ระบบเดิม 100%)    -->
+    <!-- ═════════════════════════════════════════════════════════════ -->
+    <div id="sectionArticles" class="space-y-6">
+
+      <!-- ─── LIST VIEW ─── -->
+      <div id="listView">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">📋 รายการบทความและผลงานทั้งหมด</h2>
+            <p class="text-xs text-gray-500 mt-1">จัดการเนื้อหาและผลงานของแผนกด้วย Block-based Architecture บน Cloud Firestore</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Super Admin Seeding Button -->
+            <button id="btnImportMockData"
+                    class="hidden bg-amber-500 hover:bg-amber-600 text-purple-950 font-bold px-4 py-2.5 rounded-xl transition-all shadow text-xs flex items-center gap-1.5">
+              <span>🚀</span> Import Mock Data to Firestore
+            </button>
+            <button id="btnCreate"
+                    class="bg-purple-800 hover:bg-purple-900 text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-md hover:shadow-lg flex items-center gap-2 text-sm">
+              <span class="text-lg">+</span> สร้างบทความใหม่
+            </button>
+          </div>
+        </div>
+
+        <!-- Articles Table -->
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="bg-gradient-to-r from-purple-50 to-amber-50/50 border-b border-gray-200">
+                  <th class="text-left px-6 py-3.5 text-xs font-semibold text-purple-900 uppercase tracking-wider">หัวเรื่อง</th>
+                  <th class="text-left px-6 py-3.5 text-xs font-semibold text-purple-900 uppercase tracking-wider hidden md:table-cell">แผนก</th>
+                  <th class="text-left px-6 py-3.5 text-xs font-semibold text-purple-900 uppercase tracking-wider hidden sm:table-cell">หมวดหมู่</th>
+                  <th class="text-left px-6 py-3.5 text-xs font-semibold text-purple-900 uppercase tracking-wider hidden lg:table-cell">อัปเดตล่าสุด</th>
+                  <th class="text-center px-6 py-3.5 text-xs font-semibold text-purple-900 uppercase tracking-wider">จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="articlesTableBody" class="divide-y divide-gray-100">
+              </tbody>
+            </table>
+          </div>
+          <!-- Empty State -->
+          <div id="tableEmpty" class="hidden text-center py-12">
+            <p class="text-4xl mb-3">📝</p>
+            <p class="text-gray-500">ยังไม่มีบทความใน Firestore</p>
+            <p class="text-sm text-gray-400 mt-1">กดปุ่ม "สร้างบทความใหม่" หรือกด "Import Mock Data" เพื่อเริ่มต้น</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── FORM VIEW (BLOCK EDITOR) ─── -->
+      <div id="formView" class="hidden">
+        <div class="flex items-center gap-3 mb-6">
+          <button id="btnBack"
+                  class="text-gray-500 hover:text-purple-700 transition-colors p-1.5 rounded-lg hover:bg-gray-100">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <h2 id="formTitle" class="text-2xl font-bold text-gray-900">สร้างบทความใหม่</h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Left Column: Form -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Metadata Card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+                📝 ข้อมูลบทความ
+              </h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 mb-1">แผนก <span class="text-red-500">*</span></label>
+                  <select id="inputDepartment"
+                          class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 bg-white">
+                  </select>
+                  <p id="deptLockNotice" class="hidden text-[11px] text-amber-700 mt-1 font-medium">🔒 สิทธิ์ Editor ถูกจำกัดให้บันทึกเฉพาะแผนกของตนเอง</p>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-700 mb-1">หมวดหมู่ <span class="text-red-500">*</span></label>
+                  <select id="inputCategory"
+                          class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600 bg-white">
+                  </select>
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-medium text-gray-700 mb-1">หัวเรื่อง <span class="text-red-500">*</span></label>
+                  <input id="inputTitle" type="text" placeholder="เช่น ขั้นตอนการขอรับบริการข้อมูลแผนที่"
+                         class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-purple-600 focus:border-purple-600">
+                </div>
+              </div>
+            </div>
+
+            <!-- Block Editor Card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+                🧩 เนื้อหาบทความ (Content Blocks)
+              </h3>
+
+              <!-- Add Block Buttons -->
+              <div class="flex flex-wrap gap-2 mb-6 pb-4 border-b border-gray-200">
+                <button class="btn-add-block bg-purple-50 hover:bg-purple-100 text-purple-700 px-3 py-2 rounded-xl text-xs font-semibold transition-colors border border-purple-200 flex items-center gap-1"
+                        data-block-type="paragraph">
+                  <span>+</span> เพิ่มย่อหน้า
+                </button>
+                <button class="btn-add-block bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-2 rounded-xl text-xs font-semibold transition-colors border border-amber-200 flex items-center gap-1"
+                        data-block-type="callout">
+                  <span>+</span> เพิ่มกรอบข้อความ
+                </button>
+                <button class="btn-add-block bg-green-50 hover:bg-green-100 text-green-700 px-3 py-2 rounded-xl text-xs font-semibold transition-colors border border-green-200 flex items-center gap-1"
+                        data-block-type="image">
+                  <span>+</span> เพิ่มรูปภาพ
+                </button>
+                <button class="btn-add-block bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-xl text-xs font-semibold transition-colors border border-blue-200 flex items-center gap-1"
+                        data-block-type="list">
+                  <span>+</span> เพิ่มรายการ
+                </button>
+              </div>
+
+              <!-- Blocks Container -->
+              <div id="blocksContainer" class="space-y-4">
+              </div>
+              <div id="blocksEmpty" class="text-center py-8 text-gray-400">
+                <p class="text-4xl mb-2">🧩</p>
+                <p class="text-xs">คลิกปุ่มด้านบนเพื่อเริ่มเพิ่มเนื้อหาทีละบล็อก</p>
+              </div>
+            </div>
+
+            <!-- Save / Cancel Buttons -->
+            <div class="flex gap-3 justify-end">
+              <button id="btnCancel"
+                      class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors">
+                ยกเลิก
+              </button>
+              <button id="btnSave"
+                      class="px-6 py-2.5 bg-purple-800 hover:bg-purple-900 text-white rounded-xl text-sm font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-1.5">
+                <span>💾</span> บันทึกลง Firestore
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: Live Preview -->
+          <div class="lg:col-span-1">
+            <div class="sticky top-28">
+              <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  👁️ ตัวอย่างหน้าบ้าน (Preview)
+                </h3>
+                <div id="previewContainer" class="prose-sm">
+                  <p class="text-gray-400 text-center text-xs">ตัวอย่างจะแสดงที่นี่เมื่อเริ่มพิมพ์เนื้อหา</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════════ -->
+    <!--  SECTION 2: DEPARTMENT PROFILE & MISSIONS (จัดการข้อมูลแผนก)    -->
+    <!-- ═════════════════════════════════════════════════════════════ -->
+    <div id="sectionDepartment" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900">🏢 จัดการข้อมูลและภารกิจของแผนก</h2>
+          <p class="text-xs text-gray-500 mt-1">กำหนดภาพรวม สถิติสำคัญ ภารกิจ 6 ข้อ และข้อมูลติดต่อสำหรับแสดงในหน้า department.html</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-semibold text-gray-600">เลือกแผนก:</label>
+          <select id="adminDeptSelector" class="border border-gray-300 rounded-xl px-3.5 py-2 text-sm bg-white font-medium text-purple-900 focus:ring-2 focus:ring-purple-600">
+          </select>
+        </div>
+      </div>
+
+      <!-- Department Edit Form -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8 space-y-6">
+
+        <!-- 1. General & Hero -->
+        <div>
+          <h3 class="text-base font-bold text-gray-900 mb-3 pb-2 border-b border-gray-100 flex items-center gap-2">
+            <span>ℹ️</span> 1. ภาพรวมแผนก
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">ชื่อแผนก (ภาษาไทย)</label>
+              <input id="deptEditName" type="text" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">ชื่อภาษาอังกฤษ</label>
+              <input id="deptEditNameEn" type="text" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-medium text-gray-700 mb-1">คำอธิบายสั้นใน Hero Banner</label>
+              <input id="deptEditHeroDesc" type="text" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">หัวข้อภาพรวม (เช่น GIS คืออะไร)</label>
+              <input id="deptEditOverviewTitle" type="text" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-medium text-gray-700 mb-1">เนื้อหาภาพรวมแผนก</label>
+              <textarea id="deptEditOverviewText" rows="3" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm resize-y"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Stats (3 items) -->
+        <div>
+          <h3 class="text-base font-bold text-gray-900 mb-3 pb-2 border-b border-gray-100 flex items-center gap-2">
+            <span>📊</span> 2. ตัวเลขสถิติสำคัญ 3 ด้าน
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="deptEditStatsContainer">
+          </div>
+        </div>
+
+        <!-- 3. Missions (6 items) -->
+        <div>
+          <h3 class="text-base font-bold text-gray-900 mb-3 pb-2 border-b border-gray-100 flex items-center gap-2">
+            <span>🎯</span> 3. หน้าที่และภารกิจ (6 ข้อ)
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="deptEditMissionsContainer">
+          </div>
+        </div>
+
+        <!-- 4. Contact Info -->
+        <div>
+          <h3 class="text-base font-bold text-gray-900 mb-3 pb-2 border-b border-gray-100 flex items-center gap-2">
+            <span>📞</span> 4. ข้อมูลติดต่อแผนก
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">สถานที่ตั้ง / อาคาร</label>
+              <input id="deptEditLocation" type="text" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">เบอร์โทรศัพท์ติดต่อ</label>
+              <input id="deptEditPhone" type="text" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">อีเมลทางการ</label>
+              <input id="deptEditEmail" type="text" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">เวลาทำการ</label>
+              <input id="deptEditHours" type="text" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm">
+            </div>
+          </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="flex justify-end pt-4 border-t border-gray-100">
+          <button id="btnSaveDeptProfile" class="px-6 py-2.5 bg-purple-800 hover:bg-purple-900 text-white rounded-xl text-sm font-semibold shadow transition-all">
+            💾 บันทึกข้อมูลแผนกลง Firestore
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════════ -->
+    <!--  SECTION 3: DOCUMENTS MANAGER (จัดการคลังเอกสารเผยแพร่)       -->
+    <!-- ═════════════════════════════════════════════════════════════ -->
+    <div id="sectionDocuments" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900">📁 จัดการคลังเอกสารเผยแพร่</h2>
+          <p class="text-xs text-gray-500 mt-1">เพิ่ม แก้ไข และลบเอกสารดาวน์โหลด คู่มือ แบบฟอร์ม และประกาศบน Cloud Firestore</p>
+        </div>
+        <button id="btnOpenDocModal"
+                class="bg-purple-800 hover:bg-purple-900 text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-md text-sm flex items-center gap-2">
+          <span>+</span> เพิ่มเอกสารใหม่
+        </button>
+      </div>
+
+      <!-- Documents Table -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="bg-gradient-to-r from-purple-50 to-amber-50/50 border-b border-gray-200 text-xs font-bold text-purple-900 uppercase">
+                <th class="px-5 py-3.5">ชื่อเอกสาร</th>
+                <th class="px-5 py-3.5">หมวดหมู่</th>
+                <th class="px-5 py-3.5">หน่วยงาน</th>
+                <th class="px-5 py-3.5">ประเภท/ขนาด</th>
+                <th class="px-5 py-3.5 text-center">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="adminDocsTableBody" class="divide-y divide-gray-100">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══════════════ AUTHENTICATION OVERLAY ═══════════════ -->
+  <!-- 1. Login Modal (Shown when not authenticated) -->
+  <div id="authLoginModal" class="fixed inset-0 bg-[#350d36]/90 z-[100] flex items-center justify-center p-4 backdrop-blur-md">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 text-center space-y-6 border-2 border-amber-400">
+      <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl mx-auto flex items-center justify-center text-3xl shadow-lg">
+        ⚡
+      </div>
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900">ระบบจัดการข้อมูลพอร์ทัล</h2>
+        <p class="text-xs text-purple-800 font-medium mt-1">การไฟฟ้าส่วนภูมิภาค (PEA)</p>
+        <p class="text-xs text-gray-500 mt-2">กรุณาเข้าสู่ระบบด้วยบัญชี Google เพื่อยืนยันสิทธิ์การเข้าถึงข้อมูล</p>
+      </div>
+
+      <div class="pt-2">
+        <button id="btnGoogleSignIn"
+                class="w-full py-3 px-4 rounded-xl border border-gray-300 hover:border-purple-600 bg-white hover:bg-purple-50 text-gray-700 font-semibold text-sm transition-all shadow-sm hover:shadow flex items-center justify-center gap-3">
+          <svg class="w-5 h-5" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          เข้าสู่ระบบด้วย Google
+        </button>
+      </div>
+
+      <div class="border-t pt-4 text-[11px] text-gray-400 flex items-center justify-between">
+        <span>🔒 Secured by Firebase Auth</span>
+        <a href="index.html" class="text-purple-700 hover:text-purple-900 font-medium">← กลับหน้าบ้าน</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Access Denied Modal (Shown when email is not in 'users' collection) -->
+  <div id="authAccessDeniedModal" class="fixed inset-0 bg-[#350d36]/90 z-[100] hidden items-center justify-center p-4 backdrop-blur-md">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 text-center space-y-5 border-2 border-red-500">
+      <div class="w-16 h-16 bg-red-100 text-red-600 rounded-2xl mx-auto flex items-center justify-center text-3xl shadow-sm">
+        🚫
+      </div>
+      <div>
+        <h2 class="text-xl font-bold text-gray-900">ไม่มีสิทธิ์เข้าถึงระบบแอดมิน</h2>
+        <p class="text-xs text-gray-600 mt-2">
+          บัญชี <span id="deniedUserEmail" class="font-bold text-red-600">user@example.com</span> ยังไม่ได้รับสิทธิ์เข้าใช้งานระบบ
+        </p>
+        <p class="text-[11px] text-gray-400 mt-1">กรุณาติดต่อผู้ดูแลระบบ (Super Admin) เพื่อเพิ่มสิทธิ์ใน Collection "users"</p>
+      </div>
+
+      <!-- First-time setup button (Shown if database is fresh) -->
+      <div id="firstTimeSetupBox" class="bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-xs text-amber-900 space-y-2">
+        <p class="font-bold">✨ ระบบตรวจพบว่าเพิ่งเริ่มต้นใช้งานครั้งแรก</p>
+        <p class="text-[11px] text-amber-800">คุณสามารถลงทะเบียนบัญชีนี้เป็น **Super Admin** และนำเข้าข้อมูลเริ่มต้นได้ทันที</p>
+        <button id="btnFirstTimeSetup"
+                class="w-full py-2 px-3 rounded-lg bg-amber-500 hover:bg-amber-600 text-purple-950 font-bold transition shadow text-xs">
+          🚀 ตั้งค่าบัญชีนี้เป็น Super Admin & นำเข้าข้อมูล
+        </button>
+      </div>
+
+      <div class="pt-2 flex gap-2 justify-center">
+        <button id="btnDeniedSignOut" class="px-5 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition">
+          ออกจากระบบ
+        </button>
+        <a href="index.html" class="px-5 py-2 rounded-xl bg-purple-800 hover:bg-purple-900 text-white text-xs font-semibold transition">
+          กลับหน้าบ้าน
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DOCUMENT CREATE/EDIT MODAL ═══════════════ -->
+  <div id="docModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 space-y-4">
+      <div class="flex items-center justify-between border-b pb-3">
+        <h3 id="docModalTitle" class="text-lg font-bold text-gray-900">เพิ่มเอกสารใหม่</h3>
+        <button id="btnCloseDocModal" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">ชื่อเอกสาร <span class="text-red-500">*</span></label>
+          <input id="docInputTitle" type="text" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm" placeholder="เช่น คู่มือการใช้งานระบบแผนที่">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">หน่วยงานเจ้าของ</label>
+            <select id="docInputDept" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm bg-white"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">หมวดหมู่เอกสาร</label>
+            <select id="docInputCat" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm bg-white">
+              <option value="manual">📖 คู่มือ</option>
+              <option value="form">📋 แบบฟอร์ม</option>
+              <option value="report">📊 รายงาน</option>
+              <option value="order">📜 ประกาศ/คำสั่ง</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">ชนิดไฟล์</label>
+            <select id="docInputType" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm bg-white">
+              <option value="pdf">PDF</option>
+              <option value="docx">DOCX</option>
+              <option value="xlsx">XLSX</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">ขนาดไฟล์</label>
+            <input id="docInputSize" type="text" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm" placeholder="เช่น 2.4 MB">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">ปี พ.ศ.</label>
+            <input id="docInputYear" type="text" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm" value="2569">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">ลิงก์ดาวน์โหลด (URL)</label>
+          <input id="docInputUrl" type="text" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm" placeholder="#" value="#">
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-2 border-t">
+        <button id="btnCancelDocModal" class="px-4 py-2 border rounded-xl text-xs font-medium text-gray-600 hover:bg-gray-50">ยกเลิก</button>
+        <button id="btnSaveDoc" class="px-5 py-2 bg-purple-800 hover:bg-purple-900 text-white rounded-xl text-xs font-semibold shadow">บันทึกลง Firestore</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TOAST NOTIFICATION ═══════════════ -->
+  <div id="toast"
+       class="fixed bottom-6 right-6 bg-green-600 text-white px-6 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 z-[110] flex items-center gap-2">
+    <span id="toastMessage">บันทึกสำเร็จ</span>
+  </div>
+
+  <!-- ═══════════════ DELETE CONFIRM MODAL ═══════════════ -->
+  <div id="deleteModal"
+       class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center">
+      <p class="text-4xl mb-3">⚠️</p>
+      <h3 class="text-base font-bold text-gray-900 mb-2">ยืนยันการลบ</h3>
+      <p class="text-xs text-gray-500 mb-6" id="deleteMessage">คุณต้องการลบรายการนี้หรือไม่?</p>
+      <div class="flex gap-3 justify-center">
+        <button id="btnDeleteCancel"
+                class="px-5 py-2 border border-gray-300 text-gray-700 rounded-xl text-xs font-medium hover:bg-gray-50 transition-colors">
+          ยกเลิก
+        </button>
+        <button id="btnDeleteConfirm"
+                class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-medium shadow-md transition-colors">
+          🗑️ ลบ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="bg-[#350d36] text-purple-200 mt-auto border-t-2 border-amber-400/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-xs">
+      <p>© 2569 การไฟฟ้าส่วนภูมิภาค — ระบบจัดการข้อมูลพอร์ทัล (Cloud Firestore Mode)</p>
+    </div>
+  </footer>
+
+  <script type="module" src="./js/admin.js"></script>
+</body>
+</html>

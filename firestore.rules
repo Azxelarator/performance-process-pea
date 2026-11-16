@@ -1,0 +1,82 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null && request.auth.token.email != null;
+    }
+
+    function getUserEmail() {
+      return request.auth.token.email.lower();
+    }
+
+    function getUserDoc() {
+      return get(/databases/$(database)/documents/users/$(getUserEmail()));
+    }
+
+    function isSuperAdmin() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/users/$(getUserEmail())) &&
+        getUserDoc().data.role == 'super_admin';
+    }
+
+    function isEditorOfDept(deptId) {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/users/$(getUserEmail())) &&
+        getUserDoc().data.role == 'editor' &&
+        getUserDoc().data.departmentId == deptId;
+    }
+
+    // ─── 1. Departments ─────────────────────────────────────────────
+    // Public read; write by super_admin or editor of that department
+    match /departments/{deptId} {
+      allow read: if true;
+      allow create, update: if isSuperAdmin() || isEditorOfDept(deptId);
+      allow delete: if isSuperAdmin();
+    }
+
+    // ─── 2. Articles (Block-based) ──────────────────────────────────
+    // Public read; write by super_admin or editor of the article's department
+    match /articles/{articleId} {
+      allow read: if true;
+      allow create: if isSuperAdmin() || isEditorOfDept(request.resource.data.department);
+      allow update: if isSuperAdmin() || isEditorOfDept(resource.data.department);
+      allow delete: if isSuperAdmin() || isEditorOfDept(resource.data.department);
+    }
+
+    // ─── 3. Documents ───────────────────────────────────────────────
+    // Public read; write by super_admin or editor of the document's department
+    match /documents/{docId} {
+      allow read: if true;
+      allow create: if isSuperAdmin() || isEditorOfDept(request.resource.data.department);
+      allow update: if isSuperAdmin() || isEditorOfDept(resource.data.department);
+      allow delete: if isSuperAdmin() || isEditorOfDept(resource.data.department);
+    }
+
+    // ─── 4. Announcements ───────────────────────────────────────────
+    // Public read; write by super_admin or editor of that department
+    match /announcements/{annId} {
+      allow read: if true;
+      allow create: if isSuperAdmin() || isEditorOfDept(request.resource.data.department);
+      allow update: if isSuperAdmin() || isEditorOfDept(resource.data.department);
+      allow delete: if isSuperAdmin() || isEditorOfDept(resource.data.department);
+    }
+
+    // ─── 5. Staff (Org Chart) ─────────────────────────────────────────
+    // Public read; write by super_admin or editor of the staff's department
+    match /staff/{staffId} {
+      allow read: if true;
+      allow create: if isSuperAdmin() || isEditorOfDept(request.resource.data.department);
+      allow update: if isSuperAdmin() || (isEditorOfDept(resource.data.department) && isEditorOfDept(request.resource.data.department));
+      allow delete: if isSuperAdmin() || isEditorOfDept(resource.data.department);
+    }
+
+    // ─── 6. Users (RBAC) ────────────────────────────────────────────
+    // User can read their own permissions; super_admin can read/write all
+    match /users/{email} {
+      allow read: if isAuthenticated() && (getUserEmail() == email.lower() || isSuperAdmin());
+      allow write: if isSuperAdmin();
+    }
+  }
+}
