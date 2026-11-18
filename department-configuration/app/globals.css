@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+/* Design A layout with PEA Brand Bible 2022 colours and type. */
+@theme inline {
+  --font-sans: var(--font-sarabun), "Noto Sans Thai", sans-serif; /* body text */
+  --font-heading: var(--font-prompt), var(--font-sarabun), sans-serif; /* CI: Prompt for online media */
+
+  /* CI primary colours: purple #74045F, gold #C7911B, white. */
+  --color-brand: #74045f;
+  --color-brand-ink: #74045f; /* links, icons on light backgrounds (10.9:1 on white) */
+  --color-brand-hover: #55033f;
+  --color-brand-deep: #5f034e; /* hero backgrounds */
+  --color-brand-dark: #441435; /* CI dark background: utility bar, footer */
+  --color-gold: #c7911b; /* fills and accents only: 2.8:1 on white is too low for text */
+  --color-gold-soft: #cdb578; /* CI web gold for text on purple/dark */
+  --color-gold-ink: #2b0622; /* text on gold */
+  --color-on-brand: #f6eaf2; /* body text on purple */
+
+  --color-canvas: #f8f5f7;
+  --color-line: #e8dce4;
+  --color-line-soft: #f1e8ee;
+  --color-field: #8e7a88; /* input/select borders: 3.97:1 on white (WCAG 1.4.11 needs 3:1) */
+  --color-tint: #f6e8f1;
+  --color-ink: #1f1a1e;
+  --color-ink-2: #3e3640;
+  --color-muted: #5e5560;
+  --color-chip: #eef1f5;
+  --color-chip-ink: #34404f;
+  --color-alert: #b42318;
+
+  --color-file-pdf: #b42318;
+  --color-file-docx: #1f5fad;
+  --color-file-xlsx: #1e7b45;
+
+  /* Short, purposeful motion: content appearing after a filter, menus opening. */
+  --animate-fade-in: fade-in 220ms ease-out both;
+  --animate-drop-in: drop-in 160ms ease-out both;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  @keyframes drop-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+}
+
+html {
+  /* Sticky main nav + department sub-nav: keep anchor targets visible. */
+  scroll-padding-top: 7rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* People who ask the OS for less motion get none. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Native <dialog> open/close: fade + slight scale (CSS-only, see components/modal.tsx). */
+dialog.modal {
+  opacity: 0;
+  transform: scale(0.97);
+  transition:
+    opacity 180ms ease-out,
+    transform 180ms ease-out,
+    overlay 180ms allow-discrete,
+    display 180ms allow-discrete;
+}
+dialog.modal[open] {
+  opacity: 1;
+  transform: none;
+}
+@starting-style {
+  dialog.modal[open] {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+dialog.modal::backdrop {
+  background: rgb(0 0 0 / 0);
+  transition:
+    background 180ms ease-out,
+    overlay 180ms allow-discrete,
+    display 180ms allow-discrete;
+}
+dialog.modal[open]::backdrop {
+  background: rgb(0 0 0 / 0.55);
+}
+@starting-style {
+  dialog.modal[open]::backdrop {
+    background: rgb(0 0 0 / 0);
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-canvas text-ink leading-relaxed;
+  }
+
+  a {
+    color: var(--color-brand-ink);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+  }
+
+  /* Focus ring (WCAG 2.4.7 / 1.4.11): purple on light backgrounds (10.9:1 on white);
+     containers with a dark purple background add .focus-on-dark to switch to gold
+     (5.4:1 or more on every brand purple). */
+  :root {
+    --focus-ring: var(--color-brand);
+  }
+
+  .focus-on-dark {
+    --focus-ring: var(--color-gold-soft);
+  }
+
+  .focus-on-light {
+    --focus-ring: var(--color-brand);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+}
