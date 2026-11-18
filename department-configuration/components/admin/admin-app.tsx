@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { refreshPortal } from "@/app/actions";
 import { Modal } from "@/components/modal";
-import { signInWithGoogle, signOutUser, watchAuth, type User } from "@/lib/supabase-auth";
+import { signInWithGoogle, signOutUser, watchAuth, type User } from "@/lib/firebase-auth";
 import { deleteItem, fetchCollection, fetchUserPermission, hasAnyUsers, saveItem, seedMockData } from "@/lib/repository";
 import type { Article, Department, DocumentItem, UserPermission } from "@/lib/types";
 import { ArticleManager } from "./article-manager";
@@ -178,7 +178,7 @@ function DeniedPanel({ session, onBootstrap }: { session: Extract<Session, { sta
         <p className="text-xs text-muted mt-2">
           บัญชี <span className="font-bold text-alert">{session.user.email}</span> ยังไม่ได้รับสิทธิ์เข้าใช้งาน
         </p>
-        <p className="text-[11px] text-muted mt-1">กรุณาติดต่อ Super Admin เพื่อเพิ่มสิทธิ์ในตาราง &quot;user_permissions&quot;</p>
+        <p className="text-[11px] text-muted mt-1">กรุณาติดต่อ Super Admin เพื่อเพิ่มสิทธิ์ใน collection &quot;users&quot;</p>
       </div>
       {session.canBootstrap && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-xs text-amber-900 space-y-2 text-left">
@@ -247,7 +247,7 @@ function Workspace({ permission }: { permission: UserPermission }) {
   }
 
   async function seed() {
-    if (!window.confirm("นำเข้าข้อมูลตัวอย่างเข้าสู่ Supabase? ข้อมูลที่มี id ซ้ำจะถูกเขียนทับ")) return;
+    if (!window.confirm("นำเข้าข้อมูลตัวอย่างขึ้น Firestore? ข้อมูลที่มี id ซ้ำจะถูกเขียนทับ")) return;
     setSeeding(true);
     if (await write(() => seedMockData(permission.email), "นำเข้าข้อมูลตัวอย่างเรียบร้อยแล้ว")) await reload();
     setSeeding(false);
