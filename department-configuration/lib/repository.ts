@@ -1,8 +1,8 @@
 // Repository layer with Supabase integration and mock data fallback.
-import { DOC_CATEGORY_NAMES, formatDate, thaiYear } from './format.ts';
-import { ANNOUNCEMENTS, ARTICLES, DEPARTMENTS, DOCUMENTS, STAFF } from './mock-data.ts';
-import { isSupabaseConfigured, supabase } from './supabase.ts';
-import type { Announcement, AnnouncementType, Article, Department, DocCategoryId, DocumentItem, StaffMember, UserPermission } from './types.ts';
+import { DOC_CATEGORY_NAMES, formatDate, thaiYear } from './format';
+import { ANNOUNCEMENTS, ARTICLES, DEPARTMENTS, DOCUMENTS, STAFF } from './mock-data';
+import { isSupabaseConfigured, supabase } from './supabase';
+import type { Announcement, AnnouncementType, Article, Department, DocCategoryId, DocumentItem, StaffMember, UserPermission } from './types';
 
 type Collections = {
   departments: Department;

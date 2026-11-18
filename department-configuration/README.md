@@ -8,7 +8,7 @@ Next.js 16 (App Router) + TypeScript + Tailwind CSS v4 + Firebase (Firestore, Au
 ```bash
 npm install
 cp .env.example .env.local   # ใส่ค่า Firebase web config
-npm run dev                  # http://localhost:3000
+npm run dev                  # http://localhost:3001
 ```
 
 ถ้าไม่ใส่ `.env.local` หรือ Firestore ว่าง/เชื่อมไม่ได้ ระบบจะใช้ข้อมูลจำลองใน `lib/mock-data.ts`
